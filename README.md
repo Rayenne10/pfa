@@ -1,5 +1,9 @@
 # Velora — Observability & DevSecOps Platform
 
+[![DevSecOps CI](https://github.com/Rayenne10/pfa/actions/workflows/devsecops-pipeline.yml/badge.svg)](https://github.com/Rayenne10/pfa/actions/workflows/devsecops-pipeline.yml)
+
+**Verified on 9 October 2026:** [successful Compose + Kubernetes integration](https://github.com/Rayenne10/pfa/actions/runs/37922764806), including shared traces and firing/resolved alert webhooks. [Screenshots, receipts and scan reports](https://github.com/Rayenne10/pfa/actions/runs/37922764806/artifacts/11612424800) are available in the run artifact.
+
 A containerized hotel-booking application used as an observability lab: four NestJS business microservices export Prometheus metrics and OpenTelemetry traces, a fifth NestJS service queries monitoring data, and a React dashboard presents service health, CPU, memory, event-loop lag and active alerts.
 
 The platform runs locally with **one Docker Compose command**, or in a disposable **Kubernetes/kind lab**. CI builds and tests all six applications, audits runtime dependencies, scans application images, validates monitoring rules, and exercises service failure and recovery.
@@ -77,7 +81,7 @@ The receiver keeps the last 100 deliveries in memory. Expect additional evaluati
 
 ## DevSecOps verification
 
-The [GitHub Actions workflow](../../actions/workflows/devsecops-pipeline.yml) performs:
+The [GitHub Actions workflow](https://github.com/Rayenne10/pfa/actions/workflows/devsecops-pipeline.yml) performs:
 
 1. `npm ci`, TypeScript/production builds and NestJS tests for all five backend services; React production build.
 2. Blocking `npm audit --omit=dev --audit-level=high` checks for each application.
