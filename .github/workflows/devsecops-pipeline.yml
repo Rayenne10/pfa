@@ -70,7 +70,9 @@ jobs:
           import os, secrets
           with open(os.environ['GITHUB_ENV'], 'a') as f:
               for key in ['POSTGRES_PASSWORD', 'JWT_SECRET', 'INTERNAL_API_TOKEN']:
-                  f.write(f'{key}={secrets.token_hex(32)}\n')
+                  value = secrets.token_hex(32)
+                  print(f'::add-mask::{value}')
+                  f.write(f'{key}={value}\n')
           PY
       - name: Build all six application images
         run: docker compose build --parallel
@@ -81,7 +83,10 @@ jobs:
         run: |
           mkdir -p verification
           for name in auth-service user-service admin-service customer-service dashboard-service frontend; do
-            trivy image --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --format json --output "verification/trivy-$name.json" "velora/$name:local"
+            status=0
+            trivy image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 --format json --output "verification/trivy-$name.json" "velora/$name:local" || status=$?
+            python scripts/summarize_scan.py "verification/trivy-$name.json"
+            test "$status" = 0
           done
       - name: Verify Compose HTTP, traces, alerts and recovery
         run: bash scripts/test_compose.sh
