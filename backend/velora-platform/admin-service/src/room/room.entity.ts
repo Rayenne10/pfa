@@ -8,8 +8,8 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { RoomType } from 'src/enums/room-type.enum';
-import { Hotel } from 'src/hotel/hotel.entity';
+import { RoomType } from '../enums/room-type.enum';
+import { Hotel } from '../hotel/hotel.entity';
 
 @Entity()
 export class Room {

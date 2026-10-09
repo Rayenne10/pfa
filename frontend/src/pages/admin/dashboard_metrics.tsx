@@ -29,22 +29,26 @@ export default function Dashboard_Metrics() {
   const [data, setData] = useState<any>(null);
 
   // ✅ AJOUT ALERTS
+  const [error, setError] = useState<string | null>(null);
   const [alerts, setAlerts] = useState<any[]>([]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    let active = true;
     const fetchData = async () => {
-      const res = await axios.get('http://localhost:3010/dashboard/metrics');
-      setData(res.data);
-
-      // ✅ FETCH ALERTS
-      const alertsRes = await axios.get('http://localhost:3010/dashboard/alerts');
-      setAlerts(alertsRes.data);
+      try {
+        const [metricsResponse, alertsResponse] = await Promise.all([
+          axios.get('/api/dashboard/dashboard/metrics', { timeout: 8000, signal: controller.signal }),
+          axios.get('/api/dashboard/dashboard/alerts', { timeout: 8000, signal: controller.signal }),
+        ]);
+        if (active) { setData(metricsResponse.data); setAlerts(alertsResponse.data); setError(null); }
+      } catch {
+        if (active) setError('Monitoring data is unavailable. Retrying; previous values may be stale.');
+      }
     };
-
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
-
-    return () => clearInterval(interval);
+    void fetchData();
+    const interval = setInterval(() => { void fetchData(); }, 5000);
+    return () => { active = false; controller.abort(); clearInterval(interval); };
   }, []);
 
   const format = (arr: Metric[] = [], convert?: (value: number) => number) => {
@@ -57,12 +61,12 @@ export default function Dashboard_Metrics() {
 
     return SERVICES.map((service) => ({
       service,
-      value: map.get(service) ?? 0,
+      value: map.get(service) ?? null,
     }));
   };
 
   if (!data) {
-    return <div className="dashboard-loading">Loading dashboard...</div>;
+    return <div className="dashboard-loading">{error || 'Loading dashboard...'}</div>;
   }
 
   const status = format(data.status);
@@ -75,6 +79,7 @@ export default function Dashboard_Metrics() {
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
+        {error && <p role="alert">{error}</p>}
         <div className="dashboard-header">
           <h1 className="dashboard-title">
             Real-Time <span>Monitoring Dashboard</span>
@@ -97,7 +102,7 @@ export default function Dashboard_Metrics() {
                 </div>
 
                 <div className={`status-label ${isUp ? 'up' : 'down'}`}>
-                  {isUp ? 'UP' : 'DOWN'}
+                  {s.value === null ? 'UNKNOWN' : isUp ? 'UP' : 'DOWN'}
                 </div>
 
                 <div className="status-meta">
@@ -148,7 +153,7 @@ export default function Dashboard_Metrics() {
             <div className="chart-header">
               <div>
                 <h2 className="chart-title">CPU Usage</h2>
-                <div className="chart-desc">Current CPU activity by service (%)</div>
+                <div className="chart-desc">CPU usage as a percentage of one CPU core</div>
               </div>
             </div>
 
@@ -180,8 +185,8 @@ export default function Dashboard_Metrics() {
           <div className="chart-card">
             <div className="chart-header">
               <div>
-                <h2 className="chart-title">Memory Usage</h2>
-                <div className="chart-desc">Resident memory used by each service (MB)</div>
+                <h2 className="chart-title">Resident Memory</h2>
+                <div className="chart-desc">Resident memory used by each service (MiB)</div>
               </div>
             </div>
 
@@ -205,7 +210,7 @@ export default function Dashboard_Metrics() {
             </div>
 
             <div className="dashboard-legend">
-              <span className="legend-pill">Unit: MB</span>
+              <span className="legend-pill">Unit: MiB</span>
               <span className="legend-pill">Metric: process_resident_memory_bytes</span>
             </div>
           </div>
@@ -215,7 +220,7 @@ export default function Dashboard_Metrics() {
             <div className="chart-header">
               <div>
                 <h2 className="chart-title">Event Loop Lag</h2>
-                <div className="chart-desc">Node.js delay (ms)</div>
+                <div className="chart-desc">99th percentile Node.js delay (ms)</div>
               </div>
             </div>
 
@@ -240,7 +245,7 @@ export default function Dashboard_Metrics() {
 
             <div className="dashboard-legend">
               <span className="legend-pill">Unit: ms</span>
-              <span className="legend-pill">Metric: nodejs_eventloop_lag_seconds</span>
+              <span className="legend-pill">Metric: nodejs_eventloop_lag_p99_seconds</span>
             </div>
           </div>
 

@@ -14,15 +14,16 @@ export class UsersService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    if (!process.env.SEED_ADMIN_PASSWORD) return;
     const admin = await this.repo.findOne({
-      where: { email: 'admin@velora.com' },
+      where: { email: process.env.SEED_ADMIN_EMAIL || 'admin@example.test' },
     });
 
     if (!admin) {
-      const hashed = await bcrypt.hash('admin123', 10);
+      const hashed = await bcrypt.hash(process.env.SEED_ADMIN_PASSWORD, 12);
 
       const newAdmin = this.repo.create({
-        email: 'admin@velora.com',
+        email: process.env.SEED_ADMIN_EMAIL || 'admin@example.test',
         password: hashed,
         role: Role.ADMIN,
         isVerified: true,
@@ -36,21 +37,24 @@ export class UsersService implements OnModuleInit {
   }
 
   async create(dto: CreateUserDto) {
-    console.log("DTO RECEIVED:", dto);
+
     const user = this.repo.create({
       email: dto.email,
-      password: dto.password,
+      password: await bcrypt.hash(dto.password, 12),
        firstName: dto.firstName,
     lastName: dto.lastName,
       role: dto.role ?? Role.USER,
       isVerified: true,
     });
 
-    return this.repo.save(user);
+    const saved = await this.repo.save(user);
+    const { password: _password, ...safe } = saved;
+    return safe;
   }
 
   async findAll() {
-    return this.repo.find({where: { role: Role.USER }});
+    const users = await this.repo.find({where: { role: Role.USER }});
+    return users.map(({ password: _password, ...safe }) => safe);
   }
 
   async findByEmail(email: string) {
@@ -58,7 +62,10 @@ export class UsersService implements OnModuleInit {
   }
 
   async findById(id: number) {
-    return this.repo.findOne({ where: { id } });
+    const user = await this.repo.findOne({ where: { id } });
+    if (!user) return null;
+    const { password: _password, ...safe } = user;
+    return safe;
   }
 
   async update(id: number, dto: UpdateUserDto) {

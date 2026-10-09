@@ -2,9 +2,9 @@ import { Controller, Post, Body, Get, UseGuards,Patch,Param } from '@nestjs/comm
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { JwtAuthGuard } from 'src/libs/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/libs/guards/roles.guard';
-import { Roles } from 'src/libs/Decorators/roles.decorator';
+import { JwtAuthGuard } from '../libs/guards/jwt-auth.guard';
+import { RolesGuard } from '../libs/guards/roles.guard';
+import { Roles } from '../libs/Decorators/roles.decorator';
 
 @Controller('auth')
 export class AuthController {

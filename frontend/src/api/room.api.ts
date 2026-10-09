@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API = "http://localhost:3003/admin/rooms";
-const API_AVAILABLE = "http://localhost:3004/reservations/available-rooms";
+const API = "/api/admin/admin/rooms";
+const API_AVAILABLE = "/api/customer/reservations/available-rooms";
 
 export const getAllRooms = () => axios.get(API);
 

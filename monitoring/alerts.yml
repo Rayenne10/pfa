@@ -1,0 +1,39 @@
+groups:
+- name: velora
+  rules:
+  - alert: ServiceDown
+    expr: up{job=~"(auth|user|admin|customer)-service"} == 0
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: '{{ $labels.job }} is unreachable'
+      description: Prometheus cannot scrape this service for 30 seconds.
+  - alert: HighCPU
+    expr: rate(process_cpu_seconds_total{job=~"(auth|user|admin|customer)-service"}[1m])
+      > 0.8
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: High CPU on {{ $labels.job }}
+      description: Process uses more than 0.8 CPU cores for one minute (80% of one
+        core).
+  - alert: HighMemory
+    expr: process_resident_memory_bytes{job=~"(auth|user|admin|customer)-service"}
+      > 268435456
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: High RSS on {{ $labels.job }}
+      description: Process resident memory exceeds 256 MiB.
+  - alert: HighEventLoopLag
+    expr: nodejs_eventloop_lag_p99_seconds{job=~"(auth|user|admin|customer)-service"}
+      > 0.1
+    for: 30s
+    labels:
+      severity: warning
+    annotations:
+      summary: High event-loop lag on {{ $labels.job }}
+      description: 99th percentile event-loop lag exceeds 100 ms.

@@ -4,14 +4,14 @@ import axios from 'axios';
 @Injectable()
 export class DashboardService {
   private readonly prometheusBaseUrl =
-    process.env.PROMETHEUS_URL || 'http://localhost:9090';
+    process.env.PROMETHEUS_URL || 'http://prometheus:9090';
 
   private async queryPrometheus(query: string) {
     try {
       const response = await axios.get(
         `${this.prometheusBaseUrl}/api/v1/query`,
         {
-          params: { query },
+          params: { query }, timeout: 5000,
         },
       );
 
@@ -36,7 +36,7 @@ export class DashboardService {
   }
 
   async getEventLoopLag() {
-    return this.queryPrometheus('nodejs_eventloop_lag_seconds');
+    return this.queryPrometheus('nodejs_eventloop_lag_p99_seconds');
   }
 
   async getAllMetrics() {
@@ -57,7 +57,7 @@ export class DashboardService {
   async getAlerts() {
   try {
     const response = await axios.get(
-      `${this.prometheusBaseUrl}/api/v1/alerts`
+      `${this.prometheusBaseUrl}/api/v1/alerts`, { timeout: 5000 }
     );
 
     return response.data.data.alerts;

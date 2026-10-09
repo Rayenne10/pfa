@@ -5,8 +5,8 @@ import { RoomService } from '../room/room.service';
 
 @Injectable()
 export class AdminService {
-  private USER_SERVICE = 'http://localhost:3001/users';
-  private RESERVATION_SERVICE = 'http://localhost:3004/reservations';
+  private USER_SERVICE = `${process.env.USER_SERVICE_URL || 'http://user-service:3000'}/users`;
+  private RESERVATION_SERVICE = `${process.env.CUSTOMER_SERVICE_URL || 'http://customer-service:3000'}/reservations`;
 
   constructor(
     private hotelService: HotelService,

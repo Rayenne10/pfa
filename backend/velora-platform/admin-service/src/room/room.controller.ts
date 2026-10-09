@@ -11,9 +11,9 @@ import {
 import { RoomService } from './room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
-import { Roles } from 'src/guards/role.decorator';
-import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
-import { RolesGuard } from 'src/guards/jwt.roles.guard';
+import { Roles } from '../guards/role.decorator';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { RolesGuard } from '../guards/jwt.roles.guard';
 
 @Controller('admin/rooms')
 export class RoomController {

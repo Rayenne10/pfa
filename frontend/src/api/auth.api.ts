@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = 'http://localhost:3002/auth';
+const API = '/api/auth/auth';
 
 export const login = (email: string, password: string) => {
   return axios.post(`${API}/login`, { email, password });
@@ -37,7 +37,7 @@ export const isLoggedIn = () => {
 
 
 
-const API_URL_USERS = "http://localhost:3001/users"; // adapter si besoin
+const API_URL_USERS = "/api/users/users"; // adapter si besoin
 
 export const getMe = async () => {
   try {
@@ -81,7 +81,7 @@ export const updateUser = async (userData: {
 }) => {
   try {
     const { id, ...body } = userData;
-    const response = await axios.patch(`${API_URL_USERS}/${id}`, body);
+    const response = await axios.patch(`${API_URL_USERS}/${id}`, body, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
     return response.data;
   } catch (error) {
     console.error("Erreur updateUser:", error);

@@ -1,0 +1,36 @@
+version: 2
+updates:
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+- package-ecosystem: npm
+  directory: /backend/velora-platform/user-service
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 2
+- package-ecosystem: npm
+  directory: /backend/velora-platform/auth-service
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 2
+- package-ecosystem: npm
+  directory: /backend/velora-platform/dashboard-service
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 2
+- package-ecosystem: npm
+  directory: /backend/velora-platform/customer-service
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 2
+- package-ecosystem: npm
+  directory: /backend/velora-platform/admin-service
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 2
+- package-ecosystem: npm
+  directory: /frontend
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 2

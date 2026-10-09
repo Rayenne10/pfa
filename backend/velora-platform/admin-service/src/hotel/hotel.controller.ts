@@ -12,9 +12,9 @@ import {
 import { HotelService } from './hotel.service';
 import { CreateHotelDto } from './dto/create-hotel.dto';
 import { UpdateHotelDto } from './dto/update-hotel.dto';
-import { Roles } from 'src/guards/role.decorator';
-import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
-import { RolesGuard } from 'src/guards/jwt.roles.guard';
+import { Roles } from '../guards/role.decorator';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { RolesGuard } from '../guards/jwt.roles.guard';
 
 @Controller('admin/hotels')
 export class HotelController {

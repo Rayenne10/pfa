@@ -17,13 +17,13 @@ import { MetricsController } from './metrics/metrics.controller';
     // Connexion PostgreSQL
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT) || 5433,
-      username: process.env.DB_USER,
+      host: process.env.DB_HOST || 'postgres',
+      port: Number(process.env.DB_PORT || 5432),
+      username: process.env.DB_USER || 'velora',
       password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
+      database: process.env.DB_NAME || 'admin_db',
       entities: [Hotel, Room],
-      synchronize: true,
+      synchronize: process.env.DB_SYNCHRONIZE === 'true',
     }),
     AdminModule,
     HotelModule,

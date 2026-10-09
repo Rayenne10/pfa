@@ -13,9 +13,9 @@ export class ReservationService {
     private repo: Repository<Reservation>,
   ) {}
 
-  private ROOM_SERVICE_URL = 'http://localhost:3003/admin/rooms';
-  private HOTEL_SERVICE_URL = 'http://localhost:3003/admin/hotels';
-  private USER_SERVICE_URL = 'http://localhost:3001/users';
+  private ROOM_SERVICE_URL = `${process.env.ADMIN_SERVICE_URL || 'http://admin-service:3000'}/admin/rooms`;
+  private HOTEL_SERVICE_URL = `${process.env.ADMIN_SERVICE_URL || 'http://admin-service:3000'}/admin/hotels`;
+  private USER_SERVICE_URL = `${process.env.USER_SERVICE_URL || 'http://user-service:3000'}/users`;
 
   async create(dto: CreateReservationDto) {
     // 1️⃣ Vérifier l'utilisateur

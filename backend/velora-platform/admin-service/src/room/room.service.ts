@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Room } from './room.entity';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
-import { Hotel } from 'src/hotel/hotel.entity';
+import { Hotel } from '../hotel/hotel.entity';
 
 @Injectable()
 export class RoomService {

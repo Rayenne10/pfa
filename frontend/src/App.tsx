@@ -74,6 +74,7 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
         {/*  TON NOUVEAU FEATURE */}
+        <Route path="/observability" element={<Dashboard_Metrics />} />
         <Route path="/admin/metrics" element={<Dashboard_Metrics />} />
 
       </Routes>

@@ -32,7 +32,7 @@ export default function AdminDashboard() {
     const fetchStats = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:3003/admin/dashboard",
+          "/api/admin/admin/dashboard",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

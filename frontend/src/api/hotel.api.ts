@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:3003/admin/hotels";
+const API = "/api/admin/admin/hotels";
 
 export interface Hotel {
   id: number;

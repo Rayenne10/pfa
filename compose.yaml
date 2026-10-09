@@ -1,0 +1,301 @@
+name: velora
+services:
+  auth-service:
+    image: velora/auth-service:local
+    build:
+      context: backend/velora-platform/auth-service
+    environment:
+      PORT: '3000'
+      JWT_SECRET: ${JWT_SECRET:?Copy .env.example and set JWT_SECRET}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+      OTEL_TRACES_SAMPLER: parentbased_always_on
+      DB_HOST: postgres
+      DB_PORT: '5432'
+      DB_USER: ${POSTGRES_USER:-velora}
+      DB_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      DB_SYNCHRONIZE: 'true'
+      CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-8080}
+      USER_SERVICE_URL: http://user-service:3000
+      ADMIN_SERVICE_URL: http://admin-service:3000
+      CUSTOMER_SERVICE_URL: http://customer-service:3000
+      PROMETHEUS_URL: http://prometheus:9090
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.test}
+      OTEL_SERVICE_NAME: auth-service
+      DB_NAME: auth_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    init: true
+    read_only: true
+    tmpfs:
+    - /tmp
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    restart: unless-stopped
+  user-service:
+    image: velora/user-service:local
+    build:
+      context: backend/velora-platform/user-service
+    environment:
+      PORT: '3000'
+      JWT_SECRET: ${JWT_SECRET:?Copy .env.example and set JWT_SECRET}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+      OTEL_TRACES_SAMPLER: parentbased_always_on
+      DB_HOST: postgres
+      DB_PORT: '5432'
+      DB_USER: ${POSTGRES_USER:-velora}
+      DB_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      DB_SYNCHRONIZE: 'true'
+      CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-8080}
+      USER_SERVICE_URL: http://user-service:3000
+      ADMIN_SERVICE_URL: http://admin-service:3000
+      CUSTOMER_SERVICE_URL: http://customer-service:3000
+      PROMETHEUS_URL: http://prometheus:9090
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.test}
+      OTEL_SERVICE_NAME: user-service
+      DB_NAME: user_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    init: true
+    read_only: true
+    tmpfs:
+    - /tmp
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    restart: unless-stopped
+  admin-service:
+    image: velora/admin-service:local
+    build:
+      context: backend/velora-platform/admin-service
+    environment:
+      PORT: '3000'
+      JWT_SECRET: ${JWT_SECRET:?Copy .env.example and set JWT_SECRET}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+      OTEL_TRACES_SAMPLER: parentbased_always_on
+      DB_HOST: postgres
+      DB_PORT: '5432'
+      DB_USER: ${POSTGRES_USER:-velora}
+      DB_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      DB_SYNCHRONIZE: 'true'
+      CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-8080}
+      USER_SERVICE_URL: http://user-service:3000
+      ADMIN_SERVICE_URL: http://admin-service:3000
+      CUSTOMER_SERVICE_URL: http://customer-service:3000
+      PROMETHEUS_URL: http://prometheus:9090
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.test}
+      OTEL_SERVICE_NAME: admin-service
+      DB_NAME: admin_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    init: true
+    read_only: true
+    tmpfs:
+    - /tmp
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    restart: unless-stopped
+  customer-service:
+    image: velora/customer-service:local
+    build:
+      context: backend/velora-platform/customer-service
+    environment:
+      PORT: '3000'
+      JWT_SECRET: ${JWT_SECRET:?Copy .env.example and set JWT_SECRET}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+      OTEL_TRACES_SAMPLER: parentbased_always_on
+      DB_HOST: postgres
+      DB_PORT: '5432'
+      DB_USER: ${POSTGRES_USER:-velora}
+      DB_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      DB_SYNCHRONIZE: 'true'
+      CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-8080}
+      USER_SERVICE_URL: http://user-service:3000
+      ADMIN_SERVICE_URL: http://admin-service:3000
+      CUSTOMER_SERVICE_URL: http://customer-service:3000
+      PROMETHEUS_URL: http://prometheus:9090
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.test}
+      OTEL_SERVICE_NAME: customer-service
+      DB_NAME: customer_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    init: true
+    read_only: true
+    tmpfs:
+    - /tmp
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    restart: unless-stopped
+  dashboard-service:
+    image: velora/dashboard-service:local
+    build:
+      context: backend/velora-platform/dashboard-service
+    environment:
+      PORT: '3000'
+      JWT_SECRET: ${JWT_SECRET:?Copy .env.example and set JWT_SECRET}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:?Set INTERNAL_API_TOKEN}
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://otel-collector:4318/v1/traces
+      OTEL_TRACES_SAMPLER: parentbased_always_on
+      DB_HOST: postgres
+      DB_PORT: '5432'
+      DB_USER: ${POSTGRES_USER:-velora}
+      DB_PASS: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      DB_SYNCHRONIZE: 'true'
+      CORS_ORIGIN: http://localhost:${FRONTEND_PORT:-8080}
+      USER_SERVICE_URL: http://user-service:3000
+      ADMIN_SERVICE_URL: http://admin-service:3000
+      CUSTOMER_SERVICE_URL: http://customer-service:3000
+      PROMETHEUS_URL: http://prometheus:9090
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.test}
+      OTEL_SERVICE_NAME: dashboard-service
+      DB_NAME: dashboard_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    init: true
+    read_only: true
+    tmpfs:
+    - /tmp
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    restart: unless-stopped
+  postgres:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-velora}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_DB: velora
+    volumes:
+    - postgres-data:/var/lib/postgresql/data
+    - ./backend/init-db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U "$${POSTGRES_USER}" -d velora
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  frontend:
+    image: velora/frontend:local
+    build:
+      context: frontend
+    ports:
+    - 127.0.0.1:${FRONTEND_PORT:-8080}:8080
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      user-service:
+        condition: service_healthy
+      admin-service:
+        condition: service_healthy
+      customer-service:
+        condition: service_healthy
+      dashboard-service:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+    - /tmp
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    healthcheck:
+      test:
+      - CMD
+      - wget
+      - -q
+      - -O
+      - /dev/null
+      - http://127.0.0.1:8080/healthz
+      interval: 10s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.162.0
+    command:
+    - --config=/etc/otelcol/config.yaml
+    volumes:
+    - ./monitoring/otel-collector.yml:/etc/otelcol/config.yaml:ro
+    depends_on:
+    - jaeger
+    restart: unless-stopped
+  jaeger:
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.22.0
+    ports:
+    - 127.0.0.1:16686:16686
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:v3.15.0
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --storage.tsdb.retention.time=1d
+    volumes:
+    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+    - prometheus-data:/prometheus
+    ports:
+    - 127.0.0.1:9090:9090
+    restart: unless-stopped
+  alertmanager:
+    image: prom/alertmanager:v0.34.1
+    command:
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    - --storage.path=/alertmanager
+    volumes:
+    - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+    ports:
+    - 127.0.0.1:9093:9093
+    restart: unless-stopped
+  alert-sink:
+    image: python:3.12-slim
+    user: 10001:10001
+    command:
+    - python
+    - /app/alert_sink.py
+    volumes:
+    - ./scripts/alert_sink.py:/app/alert_sink.py:ro
+    ports:
+    - 127.0.0.1:9095:9095
+    read_only: true
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    restart: unless-stopped
+volumes:
+  postgres-data: {}
+  prometheus-data: {}

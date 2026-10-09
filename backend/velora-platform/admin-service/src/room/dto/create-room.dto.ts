@@ -6,7 +6,7 @@ import {
   IsArray,
   IsBoolean,
 } from 'class-validator';
-import { RoomType } from 'src/enums/room-type.enum';
+import { RoomType } from '../../enums/room-type.enum';
 
 export class CreateRoomDto {
   @IsString()

@@ -2,7 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
-  BadRequestException,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
@@ -18,25 +18,19 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const { email, password } = registerDto;
 
-    const hashed = await bcrypt.hash(password, 10);
+
 
     try {
-      const response = await axios.post('http://localhost:3001/users', {
+      const response = await axios.post(`${process.env.USER_SERVICE_URL || 'http://user-service:3000'}/users`, {
         email,
-        password: hashed,
+        password,
         firstName: registerDto.firstName,
   lastName: registerDto.lastName,
         role: 'USER',
         isVerified: true,
       });
 
-      const token = this.jwtService.sign({ sub: response.data.id });
-
-      return {
-        message: 'User created, verify email',
-        verify_token: token,
-        verify_link: `http://localhost:3002/auth/verify/${token}`,
-      };
+      return { message: 'User created for the local demo', user: response.data };
     } catch (error) {
       throw new ConflictException('User already exists');
     }
@@ -49,7 +43,7 @@ export class AuthService {
 
     try {
       const response = await axios.get(
-        `http://localhost:3001/users/email/${email}`,
+        `${process.env.USER_SERVICE_URL || 'http://user-service:3000'}/users/email/${email}`,
       );
       user = response.data;
     } catch {
@@ -81,70 +75,20 @@ export class AuthService {
     return { message: 'Logged out successfully' };
   }
 
-  async requestReset(email: string) {
-    let user;
-
-    try {
-      const response = await axios.get(
-        `http://localhost:3001/users/email/${email}`,
-      );
-      user = response.data;
-    } catch {
-      throw new UnauthorizedException('User not found');
-    }
-
-    const token = this.jwtService.sign(
-      { sub: user.id },
-      { expiresIn: '15m' },
-    );
-
-    return {
-      message: 'Reset token generated',
-      reset_token: token,
-      reset_link: `http://localhost:3002/auth/reset-password`,
-    };
+  // No email transport is configured. Never return an account-reset token to a caller.
+  async requestReset(_email: string) {
+    throw new ServiceUnavailableException('Password reset requires a verified email delivery integration');
+  }
+  async resetPassword(_token: string, _newPassword: string) {
+    throw new ServiceUnavailableException('Password reset is disabled in this demo');
+  }
+  async verifyEmail(_token: string) {
+    throw new ServiceUnavailableException('Email verification is not configured in this demo');
   }
 
-  async resetPassword(token: string, newPassword: string) {
-    let decoded;
-
-    try {
-      decoded = this.jwtService.verify(token);
-    } catch {
-      throw new BadRequestException('Invalid or expired token');
-    }
-
-    const hashed = await bcrypt.hash(newPassword, 10);
-
-    await axios.patch(
-      `http://localhost:3001/users/${decoded.sub}`,
-      { password: hashed },
-    );
-
-    return { message: 'Password updated' };
-  }
-
-  async verifyEmail(token: string) {
-    let decoded;
-
-    try {
-      decoded = this.jwtService.verify(token);
-    } catch {
-      throw new BadRequestException('Invalid token');
-    }
-
-    await axios.patch(
-      `http://localhost:3001/users/${decoded.sub}`,
-      { isVerified: true },
-    );
-
-    return { message: 'Email verified successfully' };
-  }
-
- 
   async assignRole(userId: number, role: string) {
     await axios.patch(
-      `http://localhost:3001/users/${userId}`,
+      `${process.env.USER_SERVICE_URL || 'http://user-service:3000'}/users/${userId}`,
       { role },
     );
 

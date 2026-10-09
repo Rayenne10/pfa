@@ -13,9 +13,9 @@ import {
 } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
-import { Roles } from 'src/guards/role.decorator';
-import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
-import { RolesGuard } from 'src/guards/jwt.roles.guard';
+import { Roles } from '../guards/role.decorator';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { RolesGuard } from '../guards/jwt.roles.guard';
 
 @Controller('reservations')
 export class ReservationController {

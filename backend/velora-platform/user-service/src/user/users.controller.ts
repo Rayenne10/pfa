@@ -1,3 +1,5 @@
+import { InternalGuard } from '../guards/internal.guard';
+import { UserUpdateGuard } from '../guards/user-update.guard';
 import {
   Controller,
   Post,
@@ -14,14 +16,15 @@ import { UsersService } from './users.service';
 import { Role } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/guards/jwt.auth.guard';
-import { RolesGuard } from 'src/guards/jwt.roles.guard';
-import { Roles } from 'src/guards/role.decorator';
+import { JwtAuthGuard } from '../guards/jwt.auth.guard';
+import { RolesGuard } from '../guards/jwt.roles.guard';
+import { Roles } from '../guards/role.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) { }
 
+  @UseGuards(InternalGuard)
   @Post()
   create(@Body() body: CreateUserDto) {
     return this.usersService.create(body);
@@ -34,6 +37,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @UseGuards(InternalGuard)
   @Get('email/:email')
   findByEmail(@Param('email') email: string) {
     return this.usersService.findByEmail(email);
@@ -56,11 +60,13 @@ countUsers() {
   findOne(@Param('id') id: number) {
     return this.usersService.findById(id);
   }
+  @UseGuards(UserUpdateGuard)
   @Patch(':id')
-  update(@Param('id') id: number, @Body() body: UpdateUserDto) {
+  update(@Param('id') id: number, @Body() body: UpdateUserDto, @Req() req: any) {
+    if (!req.internal && req.user.role !== 'ADMIN' && (Number(req.user.sub) !== Number(id) || body.role !== undefined || body.isVerified !== undefined)) throw new ForbiddenException();
     return this.usersService.update(id, body);
   }
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Delete(':id')
   delete(@Param('id') id: number) {
