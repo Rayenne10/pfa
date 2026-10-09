@@ -9,21 +9,10 @@ metadata:
   name: monitoring-config
   namespace: velora
 data:
-  otel-collector.yml: "receivers:\n  otlp:\n    protocols:\n      http:\n        endpoint:\
-    \ 0.0.0.0:4318\nprocessors:\n  memory_limiter:\n    check_interval: 1s\n    limit_mib:\
-    \ 128\n    spike_limit_mib: 32\n  batch:\n    timeout: 1s\nexporters:\n  otlp/jaeger:\n\
-    \    endpoint: jaeger:4317\n    tls:\n      insecure: true\nextensions:\n  health_check:\n\
-    \    endpoint: 0.0.0.0:13133\nservice:\n  extensions:\n  - health_check\n  pipelines:\n\
-    \    traces:\n      receivers:\n      - otlp\n      processors:\n      - memory_limiter\n\
-    \      - batch\n      exporters:\n      - otlp/jaeger\n"
-  prometheus.yml: "global:\n  scrape_interval: 5s\n  evaluation_interval: 5s\nrule_files:\n\
-    - /etc/prometheus/alerts.yml\nalerting:\n  alertmanagers:\n  - static_configs:\n\
-    \    - targets:\n      - alertmanager:9093\nscrape_configs:\n- job_name: auth-service\n\
-    \  metrics_path: /metrics\n  static_configs:\n  - targets:\n    - auth-service:3000\n\
-    - job_name: user-service\n  metrics_path: /metrics\n  static_configs:\n  - targets:\n\
-    \    - user-service:3000\n- job_name: admin-service\n  metrics_path: /metrics\n\
-    \  static_configs:\n  - targets:\n    - admin-service:3000\n- job_name: customer-service\n\
-    \  metrics_path: /metrics\n  static_configs:\n  - targets:\n    - customer-service:3000\n"
+  alertmanager.yml: "route:\n  receiver: local-webhook\n  group_by:\n  - alertname\n\
+    \  - job\n  group_wait: 5s\n  group_interval: 10s\n  repeat_interval: 1h\nreceivers:\n\
+    - name: local-webhook\n  webhook_configs:\n  - url: http://alert-sink:9095/alerts\n\
+    \    send_resolved: true\n"
   alerts.yml: "groups:\n- name: velora\n  rules:\n  - alert: ServiceDown\n    expr:\
     \ up{job=~\"(auth|user|admin|customer)-service\"} == 0\n    for: 30s\n    labels:\n\
     \      severity: critical\n    annotations:\n      summary: '{{ $labels.job }}\
@@ -40,10 +29,21 @@ data:
     }\n      > 0.1\n    for: 30s\n    labels:\n      severity: warning\n    annotations:\n\
     \      summary: High event-loop lag on {{ $labels.job }}\n      description: 99th\
     \ percentile event-loop lag exceeds 100 ms.\n"
-  alertmanager.yml: "route:\n  receiver: local-webhook\n  group_by:\n  - alertname\n\
-    \  - job\n  group_wait: 5s\n  group_interval: 10s\n  repeat_interval: 1h\nreceivers:\n\
-    - name: local-webhook\n  webhook_configs:\n  - url: http://alert-sink:9095/alerts\n\
-    \    send_resolved: true\n"
+  otel-collector.yml: "receivers:\n  otlp:\n    protocols:\n      http:\n        endpoint:\
+    \ 0.0.0.0:4318\nprocessors:\n  memory_limiter:\n    check_interval: 1s\n    limit_mib:\
+    \ 128\n    spike_limit_mib: 32\n  batch:\n    timeout: 1s\nexporters:\n  otlp/jaeger:\n\
+    \    endpoint: jaeger:4317\n    tls:\n      insecure: true\nextensions:\n  health_check:\n\
+    \    endpoint: 0.0.0.0:13133\nservice:\n  extensions:\n  - health_check\n  pipelines:\n\
+    \    traces:\n      receivers:\n      - otlp\n      processors:\n      - memory_limiter\n\
+    \      - batch\n      exporters:\n      - otlp/jaeger\n"
+  prometheus.yml: "global:\n  scrape_interval: 5s\n  evaluation_interval: 5s\nrule_files:\n\
+    - /etc/prometheus/alerts.yml\nalerting:\n  alertmanagers:\n  - static_configs:\n\
+    \    - targets:\n      - alertmanager:9093\nscrape_configs:\n- job_name: auth-service\n\
+    \  metrics_path: /metrics\n  static_configs:\n  - targets:\n    - auth-service:3000\n\
+    - job_name: user-service\n  metrics_path: /metrics\n  static_configs:\n  - targets:\n\
+    \    - user-service:3000\n- job_name: admin-service\n  metrics_path: /metrics\n\
+    \  static_configs:\n  - targets:\n    - admin-service:3000\n- job_name: customer-service\n\
+    \  metrics_path: /metrics\n  static_configs:\n  - targets:\n    - customer-service:3000\n"
 ---
 apiVersion: v1
 kind: ConfigMap

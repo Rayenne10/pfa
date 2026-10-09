@@ -12,7 +12,7 @@ def render():
     def add(kind, name, **fields):
         docs.append({'apiVersion': 'apps/v1' if kind == 'Deployment' else 'v1', 'kind': kind,
                      'metadata': {'name': name, 'namespace': 'velora'}, **fields})
-    add('ConfigMap', 'monitoring-config', data={p.name: p.read_text() for p in (ROOT / 'monitoring').glob('*.yml') if p.name != 'rule-tests.yml'})
+    add('ConfigMap', 'monitoring-config', data={p.name: p.read_text() for p in sorted((ROOT / 'monitoring').glob('*.yml')) if p.name != 'rule-tests.yml'})
     add('ConfigMap', 'postgres-init', data={'init.sql': (ROOT / 'backend/init-db/init.sql').read_text()})
     add('ConfigMap', 'alert-sink-script', data={'alert_sink.py': (ROOT / 'scripts/alert_sink.py').read_text()})
     for name, spec in compose['services'].items():
