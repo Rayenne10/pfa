@@ -4,6 +4,8 @@ import json
 import time
 import urllib.request
 import urllib.error
+import urllib.parse
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 APPS = ['auth-service', 'user-service', 'admin-service', 'customer-service']
@@ -11,6 +13,21 @@ APPS = ['auth-service', 'user-service', 'admin-service', 'customer-service']
 def get(url):
     with urllib.request.urlopen(url, timeout=10) as response:
         return json.load(response)
+
+def trace_services(payload):
+    groups = {}
+    for resource in payload.get('result', {}).get('resourceSpans', []):
+        name = next((a.get('value', {}).get('stringValue') for a in resource.get('resource', {}).get('attributes', []) if a.get('key') == 'service.name'), None)
+        for scope in resource.get('scopeSpans', []):
+            for span in scope.get('spans', []):
+                if name and span.get('traceId'):
+                    groups.setdefault(span['traceId'], set()).add(name)
+    return groups
+
+def search_traces(base, service):
+    now = datetime.now(timezone.utc)
+    params = urllib.parse.urlencode({'query.serviceName': service, 'query.startTimeMin': (now-timedelta(hours=1)).isoformat(), 'query.startTimeMax': now.isoformat(), 'query.searchDepth': 100})
+    return trace_services(get(base+'/api/v3/traces?'+params))
 
 def wait(label, check, timeout=180):
     end = time.monotonic() + timeout
@@ -47,7 +64,7 @@ def main():
             return len(targets) == 4 and all(t['health'] == 'up' for t in targets)
         wait('four healthy scrape targets', scraped)
         for app in APPS:
-            wait(app+' traces in Jaeger', lambda app=app: get(a.jaeger+'/api/traces?service='+app)['data'])
+            wait(app+' traces in Jaeger', lambda app=app: any(app in names for names in search_traces(a.jaeger, app).values()))
         metrics = get(a.frontend+'/api/dashboard/dashboard/metrics')
         if len(metrics['status']) != 4: raise RuntimeError('Dashboard did not return all four service statuses')
         # Regression: caller cannot request account recovery tokens or read password hashes.
@@ -67,8 +84,8 @@ def main():
         token = post('/api/auth/auth/login', {'email':email, 'password':'smoke-password-123'})['access_token']
         if not token: raise RuntimeError('Login failed')
         def correlated():
-            traces = get(a.jaeger+'/api/traces?service=auth-service')['data']
-            return any({'auth-service', 'user-service'}.issubset({proc['serviceName'] for proc in trace['processes'].values()}) for trace in traces)
+            traces = search_traces(a.jaeger, 'auth-service')
+            return any({'auth-service', 'user-service'}.issubset(names) for names in traces.values())
         wait('propagated auth-to-user trace', correlated)
         result = {'http': True, 'four_prometheus_targets': True, 'four_jaeger_services': True, 'dashboard': True, 'correlated_auth_user_trace': True, 'registration_login': True, 'internal_user_api_protected': True}
     target = Path(a.output); target.parent.mkdir(parents=True, exist_ok=True)
