@@ -6,6 +6,10 @@ COPY . .
 RUN npm run build && npm prune --omit=dev
 
 FROM node:24-bookworm-slim AS runtime
+# Apply available OS security patches; package managers are unnecessary at runtime.
+RUN apt-get update && apt-get upgrade -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn* \
+    && rm -f /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg
 ENV NODE_ENV=production PORT=3000
 WORKDIR /app
 COPY --from=build --chown=node:node /app/node_modules ./node_modules
