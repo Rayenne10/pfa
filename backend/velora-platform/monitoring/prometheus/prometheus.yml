@@ -1,0 +1,37 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+rule_files:
+  - "alerts.yml"
+
+scrape_configs:
+  - job_name: 'auth-service'
+    static_configs:
+      - targets: ['auth-service:3000']
+    metrics_path: /metrics
+
+  - job_name: 'user-service'
+    static_configs:
+      - targets: ['user-service:3000']
+    metrics_path: /metrics
+
+  - job_name: 'admin-service'
+    static_configs:
+      - targets: ['admin-service:3000']
+    metrics_path: /metrics
+
+  - job_name: 'customer-service'
+    static_configs:
+      - targets: ['customer-service:3000']
+    metrics_path: /metrics
+
+  - job_name: 'dashboard-service'
+    static_configs:
+      - targets: ['dashboard-service:3000']
+    metrics_path: /metrics

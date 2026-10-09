@@ -1,0 +1,86 @@
+/* UserProfile.css inspiré de HotelsDetails.css */
+
+.profile-page {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: white;
+  padding: 50px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.profile-header {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 30px;
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.profile-container {
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: transform 0.3s ease;
+}
+
+.profile-container:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.profile-container p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.profile-edit-btn {
+  align-self: center;
+  padding: 14px 28px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  color: white;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.4);
+}
+
+.profile-edit-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(135deg, #5458ee, #6c63ff);
+  box-shadow: 0 16px 28px rgba(99, 102, 241, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .profile-header {
+    font-size: 2rem;
+  }
+
+  .profile-container {
+    padding: 20px;
+  }
+
+  .profile-edit-btn {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+}

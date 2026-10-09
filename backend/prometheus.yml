@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 5s
+rule_files:
+  - "alerts.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - "alertmanager:9093"
+scrape_configs:
+  - job_name: 'auth-service'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['host.docker.internal:3002']
+
+  - job_name: 'user-service'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['host.docker.internal:3001']
+
+  - job_name: 'admin-service'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['host.docker.internal:3003']
+
+  - job_name: 'customer-service'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['host.docker.internal:3004'] #ken nhtou toul localhost: c le container lui meme pas nestjs

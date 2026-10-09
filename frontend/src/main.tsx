@@ -1,0 +1,20 @@
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App'
+import { Toaster } from 'react-hot-toast'
+
+function AppWrapper() {
+  return (
+    <>
+      <App />
+      <Toaster position="top-right" />
+    </>
+  )
+}
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <AppWrapper />
+  </StrictMode>,
+)

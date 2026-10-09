@@ -1,0 +1,239 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  color: white;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  overflow-y: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(15px);
+  padding: 30px 20px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.closed {
+  left: -250px;
+}
+
+/* SIDEBAR LINKS */
+.sidebar-links {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar-links button {
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+.sidebar-links button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 40px;
+  margin-left: 220px;
+  width: calc(100% - 220px);
+  transition: left 0.3s ease;
+}
+
+.main.full {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* HEADER */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.logout-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* GRID */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.dashboard-card {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 25px;
+  border-radius: 16px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+/* SHORTCUTS */
+.section-title {
+  margin-top: 40px;
+  margin-bottom: 15px;
+}
+
+.shortcut-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.shortcut-card {
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.shortcut-card:hover {
+  transform: translateY(-5px);
+}
+
+/* CHART */
+.chart-container {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+/* SCROLLBAR */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+
+/* OVERLAY */
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+/* MENU BUTTON */
+.menu-btn {
+  font-size: 22px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .sidebar {
+    left: -250px;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.features-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+  color: white;
+}
+
+/* Grid pour un meilleur alignement */
+.features-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Feature item = pill moderne */
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 0.95rem;
+  user-select: none;
+}
+
+/* Hover */
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Checkbox caché (on stylise le label) */
+.feature-item input {
+  display: none;
+}
+
+/* Etat sélectionné */
+.feature-item.active {
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+}
+
+/* Petit effet check */
+.feature-item::before {
+  content: "✓";
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.feature-item.active::before {
+  opacity: 1;
+}

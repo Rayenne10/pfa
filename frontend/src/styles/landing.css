@@ -1,0 +1,230 @@
+/* LandingPage général */
+.landing-page {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: white;
+  scroll-behavior: smooth;
+}
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 100px;
+  padding-top: 160px;
+  gap: 40px;
+  flex-wrap: nowrap;
+  min-height: 500px;
+}
+
+.hero-content {
+  flex: 1;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+}
+
+.highlight {
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.title-gradient {
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center; /* Centre le bouton horizontalement */    /* Plus d'espace pour le laisser respirer */
+}
+
+.btn-primary {
+  /* Dimensions et espacement */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;    /* Plus large pour un bouton unique imposant */
+  min-width: 220px;      /* Assure une présence visuelle forte */
+  
+  /* Style visuel */
+  border-radius: 14px;   /* Arrondi légèrement plus prononcé */
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  color: white;
+  font-size: 18px;       /* Texte un peu plus grand */
+  font-weight: 700;      /* Texte plus gras pour l'autorité */
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  
+  /* Effets et profondeur */
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.4);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Interactions */
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.02); /* Effet de levée plus dynamique */
+  background: linear-gradient(135deg, #5458ee, #6c63ff);
+  box-shadow: 0 18px 30px rgba(99, 102, 241, 0.5);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px); /* Effet de pression au clic */
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+.hero-image {
+  position: relative;
+  flex: 1;
+  width: 500px;
+  max-width: 45vw;
+  height: 350px;
+  min-width: 300px;
+  border-radius: 20px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.25);
+}
+
+.carousel-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.carousel-image.active {
+  opacity: 1;
+}
+
+/* About Section */
+.about-section {
+  padding: 80px 100px;
+  text-align: center;
+  scroll-margin-top: 80px;
+}
+
+.about-header-text h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #6366f1, #7c72ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+}
+
+.about-header-text p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.6;
+}
+
+.features-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.feature {
+  flex: 1;
+  min-width: 250px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 30px 20px;
+  text-align: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.feature p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.76);
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 40px 20px;
+    padding-top: 120px;
+    flex-direction: column-reverse;
+    flex-wrap: wrap;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-image {
+    width: 100%;
+    max-width: 100%;
+    height: 300px;
+    min-width: 100%;
+  }
+
+  .hero-buttons {
+    display: flex;
+  gap: 15px;
+  align-items: center;
+  }
+
+  .about-section {
+    padding: 40px 20px;
+  }
+
+  .features-container {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .about-header-text h2 {
+    font-size: 2rem;
+  }
+}
